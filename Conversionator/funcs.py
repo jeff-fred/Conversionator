@@ -114,6 +114,35 @@ def _frame_buttons(frame, controller, values):
         command=lambda: clear(frame.valueEntry, frame.resultLabel, frame.inputMenu, frame.outputMenu)
     ).grid(row=4, column=2, sticky="se", padx=15, pady=15)
 
+# Frame buttons for the temperature window
+def _frame_buttons_temperature(frame, controller, values):
+    tk.Button(
+        frame,
+        text="Return",
+        bg=frame.backgroundColor,
+        fg=frame.foregroundColor,
+        font=("Courier", 10, "italic"),
+        command=lambda: [clear(frame.valueEntry, frame.resultLabel, frame.inputMenu, frame.outputMenu), controller.show_window(mainmenu.MainMenu)]
+        ).grid(row=frame.numRows, column=0, padx=15, pady=15, sticky="ws")
+    
+    tk.Button(
+        frame,
+        text="Calculate",
+        fg=frame.foregroundColor,
+        bg=frame.backgroundColor,
+        font=("Courier", 12,"bold"),
+        command=lambda: calculate_temperature(values, frame.inputMenu, frame.outputMenu, frame.valueEntry, frame.resultLabel)
+    ).grid(row=4, columnspan=3, sticky="n")
+
+    tk.Button(
+        frame,
+        text="Clear",
+        fg=frame.foregroundColor,
+        bg=frame.backgroundColor,
+        font=("Courier", 10, "italic"),
+        command=lambda: clear(frame.valueEntry, frame.resultLabel, frame.inputMenu, frame.outputMenu)
+    ).grid(row=4, column=2, sticky="se", padx=15, pady=15)
+
 # Grid and edit the menus
 def _frame_menus(frame, values, inMenu, outMenu):
     inMenu.state(["readonly"])
@@ -132,7 +161,7 @@ def calculate(values, inMenu, outMenu, entryWidget, resultWidget):
     try:
         entryValue = int(entryWidget.get())
         conversion = values[inMenu.get()][outMenu.get()]
-        calculation = round((entryValue*conversion), 10)
+        calculation = (entryValue*conversion)
         resultWidget.config(text=str(calculation))
     except ValueError:
         clear(entryWidget, resultWidget, inMenu, outMenu)
@@ -144,3 +173,34 @@ def clear(entryWidget, resultWidget, inMenu, outMenu):
     resultWidget.config(text="----")
     inMenu.set("")
     outMenu.set("")
+
+def calculate_temperature(values, inMenu, outMenu, entryWidget, resultWidget):
+    try:
+        someNumber = int(entryWidget.get())
+        conversionMultiplier = values[inMenu.get()][outMenu.get()]
+        if inMenu.get() == "Celsius" and outMenu.get() == "Fahrenheit":
+            result = (someNumber * (9/5)) + 32
+            resultWidget.config(text=str(result))
+        elif inMenu.get() == "Celsius" and outMenu.get() == "Kelvin":
+            result = (someNumber + 273.15)
+            resultWidget.config(text=str(result))
+        elif inMenu.get() == "Kelvin" and outMenu.get() == "Celsius":
+            result = (someNumber - 273.15)
+            resultWidget.config(text=str(result))
+        elif inMenu.get() == "Kelvin" and outMenu.get() == "Fahrenheit":
+            result = (someNumber - 273.15)*1.8000 + 32
+            resultWidget.config(text=str(result))
+        elif inMenu.get() == "Fahrenheit" and outMenu.get() == "Celsius":
+            result = (5/9)*(someNumber-32)
+            resultWidget.config(text=str(result))
+        elif inMenu.get() == "Fahrenheit" and outMenu.get() == "Kelvin":
+            result = ((someNumber-32)/1.800) + 273.15
+            resultWidget.config(text=str(result))
+        else:
+            result = (someNumber * conversionMultiplier)
+            resultWidget.config(text=str(result))
+        
+
+    except ValueError:
+        clear(entryWidget, resultWidget, inMenu, outMenu)
+        messagebox.showerror("Error", "Please enter a number.")
