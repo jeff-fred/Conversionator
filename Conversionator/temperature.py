@@ -6,12 +6,12 @@ import tkinter as tk
 from tkinter import ttk
 
 
-
 TEMPERATURE_VALUES = {
-    "Celsius":{"Celsius":1, "Kelvin":274.15, "Fahrenheit":33.8},
-    "Kelvin":{"Celsius":-272.15, "Kelvin":1, "Fahrenheit":-457.87},
-    "Fahrenheit":{"Celsius":-17.222222222, "Kelvin":255.92777778, "Fahrenheit":1}
+    "Celsius":{"Celsius":1, "Kelvin":0, "Fahrenheit":9/5},
+    "Kelvin":{"Celsius":0, "Kelvin":1, "Fahrenheit":0},
+    "Fahrenheit":{"Celsius":0, "Kelvin":0, "Fahrenheit":1}
 }
+
 
 
 class Temperature(tk.Frame):
@@ -27,6 +27,7 @@ class Temperature(tk.Frame):
         super().__init__()
         self.grid(row=0, column=0, sticky="nsew")
         self.controller = controller
+
 
         # Frame Characteristics
         self.configure(bg=self.backgroundColor)
@@ -45,11 +46,12 @@ class Temperature(tk.Frame):
         self.outputMenu = ttk.Combobox(self)
 
         self.setup_widgets()
-
+ 
 
     def setup_widgets(self):
         funcs._frame_title(self, "Temperature")
         funcs._frame_labels(self)
-        funcs._frame_buttons(self, self.controller, TEMPERATURE_VALUES)
+        funcs._frame_buttons_temperature(self, self.controller, TEMPERATURE_VALUES)
         funcs._frame_inputs_n_outputs(self, self.valueEntry, self.resultLabel)
         funcs._frame_menus(self, TEMPERATURE_VALUES, self.inputMenu, self.outputMenu)
+
